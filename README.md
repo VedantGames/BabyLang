@@ -1,2 +1,2 @@
 BabyLang
-A toy programming language written in Typescript
+A toy programming language written in Javascript
