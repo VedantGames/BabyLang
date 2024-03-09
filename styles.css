@@ -69,7 +69,7 @@ h4 {
 
 #Playground {
   width: 100% auto;
-  height: 200px;
+  height: 300px;
   margin-bottom: 10px;
   background-color: rgb(51, 51, 51);
   border: none;
@@ -82,6 +82,12 @@ textarea:focus-visible {
   border: none;
 }
 
+#stxHighlighter {
+  height: 300px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
 #div1 {
   width: 100%;
   display: flex;
@@ -90,7 +96,7 @@ textarea:focus-visible {
   height: 60px;
   margin-top: 70px;
 }
-
+ 
 #playgroundBtn {
   height: auto;
   width: auto;
@@ -172,6 +178,7 @@ textarea:focus-visible {
 }
 
 .keyword {
+  left: 0;
   color: #cc99cd;
 }
 
@@ -183,12 +190,20 @@ textarea:focus-visible {
   color: #67cdcc;
 }
 
-.number {
+.number { 
   color: #f08d49;
 }
 
 .string {
   color: #7ec699;
+}
+
+.numberLine { 
+  position: absolute;
+  left: 10px;
+  color: #8a8a8a;
+  text-align: right;
+  width: 40px;
 }
 
 .documentation h1 {
