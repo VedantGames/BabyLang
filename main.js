@@ -64,7 +64,6 @@ function interpret() {
                 output += evaluateArithmetic(value, i + 1) + ' ';
             } else if (value in variables) {
                 output += variables[value] + ' ';
-                console.log(variables, variables[value]);
             } else {
                 output += value + ' ';
             }
@@ -76,7 +75,6 @@ function interpret() {
         let i = 0;
         while (i < block.length) {
             const subStatement = block[i].trim();
-            console.log("aa", i,block[i]);
             if (subStatement.split(' ')[0] in variables) { 
                 const parts = subStatement.split('=')
                 const variable = parts[0].trim();
@@ -94,7 +92,6 @@ function interpret() {
                 const condition = subStatement.substring(9).trim();
                 
                 if (!conditionMet) {
-                    //console.log("cc", evaluateCondition(condition), condition);
                     if (evaluateCondition(condition)) {
                         conditionMet = true;
                         let bracketLineCount = 1;
@@ -176,7 +173,6 @@ function interpret() {
             } else if (subStatement.startsWith('warna') && conditionMet) {
                 let openB = -1;
                 while (i < block.length) {
-                    console.log(i, block[i], openB);
                     if (block[i].includes("}")) {
                         if (openB == 0) {
                             break
@@ -188,7 +184,6 @@ function interpret() {
                 }
             } else if (subStatement.startsWith('baby jab tak')) {
                 const condition = subStatement.substring(12).trim();
-                console.log(condition, evaluateCondition(condition));
                 if (evaluateCondition(condition)) {
                     let bracketLineCount = 0;
                     while (evaluateCondition(condition)) {
@@ -234,3 +229,152 @@ function interpret() {
     document.getElementById('output').style.display = "block";
     document.getElementById('output').innerHTML = output;
 }
+
+function syntaxHighlighting() {
+    editor = document.getElementById('input');
+    code = editor.value.split('\n');
+    output = document.getElementById('stxHighlighter');
+
+    var e = [];
+
+    output.innerHTML = "";
+    let n = 0;
+    while (n < code.length) {
+        line = code[n];
+        trimmed = line.trim();
+        splitted = trimmed.split(' ');
+        var maxReached = 0;
+
+        e.push("<span class='numberLine'>" + (n+1) + "   </span><span>");
+        let m = 0;
+        while (line.split(' ')[m] == '') {
+            e.push(' ');
+            m++;
+        }
+        e.push("</span>");
+        if (trimmed.startsWith('baby chalo shuru karte h')) {
+            e.push("<span class='keyword'>baby chalo shuru karte h </span>");
+            maxReached = 5;
+        } else if (line.startsWith('bas baby ab ho gya')) {
+            e.push("<span class='keyword'>bas baby ab ho gya </span>");
+            maxReached = 5;
+        } else if (trimmed.startsWith('baby ye h')) {
+            maxReached = 6;
+            e.push("<span class='keyword'>baby ye h </span>");
+            e.push((splitted[3] == undefined) ? '' : splitted[3] + ' ');
+            if (splitted[4] == '=') 
+                e.push("<span class='operator'>= </span>");
+            else 
+                maxReached = 4;
+            let variable = splitted[5];
+            if (variable == undefined) {
+                console.log("asd");
+            } else if (parseInt(variable) == variable || variable == 'sahi' || variable == 'galat') {
+                e.push("<span class='number'>" + variable + " </span>");
+            } else if (variable == 'nalla') {
+                e.push("<span class='keyword'>" + variable + " </span>");
+            } else {
+                e.push("<span>" + variable + " </span>");
+            }
+        } else if (trimmed.startsWith('baby bolo')) {
+            maxReached = 3;
+            e.push("<span class='keyword'>baby bolo </span>");
+            let variable = splitted[2];
+            if (variable == undefined) {
+                console.log("asd");
+            } else if (parseInt(variable) == variable || variable == 'sahi' || variable == 'galat') {
+                e.push("<span class='number'>" + variable + " </span>");
+            } else if (variable == 'nalla') {
+                e.push("<span class='keyword'>" + variable + " </span>");
+            } else if (variable.startsWith('"') && line.endsWith('"')) {
+                var p = 3;
+                e.push("<span class='string'>" + variable + " </span>");
+                while (!splitted[p].endsWith('"') && p < splitted.length) {
+                    e.push("<span class='string'>" + splitted[p] + " </span>");
+                    p++;
+                    maxReached++;
+                }
+                maxReached++;
+                e.push("<span class='string'>" + splitted[p] + " </span>");
+            } else {
+                e.push("<span>" + variable + " </span>");
+            }
+        } else if (trimmed.startsWith('baby agar')) {
+            maxReached = 2;
+            e.push("<span class='keyword'>baby agar </span>");
+            for (let x = 2; x < splitted.length; x++) {
+                maxReached++;
+                if (splitted[x] == '+' || splitted[x] == '-' || splitted[x] == '*' || splitted[x] == '/' || splitted[x] == '==' || splitted[x] == '<' || splitted[x] == '>' || splitted[x] == '<=' || splitted[x] == '>=' || splitted[x] == '!=') {
+                    e.push("<span class='operator'>" + splitted[x] + " </span>");
+                } else if (parseInt(splitted[x]) == splitted[x] || splitted[x] == 'sahi' || splitted[x] == 'galat') {
+                    e.push("<span class='number'>" + splitted[x] + " </span>");
+                } else if (splitted[x] == 'nalla') {
+                    e.push("<span class='keyword'>nalla </span>");
+                }
+                 else {
+                    e.push("<span>" + splitted[x] + " </span>");
+                }
+            }
+        } else if (trimmed.startsWith('nahi to baby')) {
+            maxReached = 3;
+            e.push("<span class='keyword'>nahi to baby </span>");
+            for (let x = 3; x < splitted.length; x++) {
+                maxReached++;
+                if (splitted[x] == '+' || splitted[x] == '-' || splitted[x] == '*' || splitted[x] == '/' || splitted[x] == '==' || splitted[x] == '<' || splitted[x] == '>' || splitted[x] == '<=' || splitted[x] == '>=' || splitted[x] == '!=') {
+                    e.push("<span class='operator'>" + splitted[x] + " </span>");
+                } else if (parseInt(splitted[x]) == splitted[x] || splitted[x] == 'sahi' || splitted[x] == 'galat') {
+                    e.push("<span class='number'>" + splitted[x] + " </span>");
+                } else if (splitted[x] == 'nalla') {
+                    e.push("<span class='keyword'>nalla </span>");
+                }
+                 else {
+                    e.push("<span>" + splitted[x] + " </span>");
+                }
+            }
+        } else if (trimmed.startsWith('baby jab tak')) {
+            maxReached = 3;
+            e.push("<span class='keyword'>baby jab tak </span>");
+            for (let x = 3; x < splitted.length; x++) {
+                maxReached++;
+                if (splitted[x] == '+' || splitted[x] == '-' || splitted[x] == '*' || splitted[x] == '/' || splitted[x] == '==' || splitted[x] == '<' || splitted[x] == '>' || splitted[x] == '<=' || splitted[x] == '>=' || splitted[x] == '!=') {
+                    e.push("<span class='operator'>" + splitted[x] + " </span>");
+                } else if (parseInt(splitted[x]) == splitted[x] || splitted[x] == 'sahi' || splitted[x] == 'galat') {
+                    e.push("<span class='number'>" + splitted[x] + " </span>");
+                } else if (splitted[x] == 'nalla') {
+                    e.push("<span class='keyword'>nalla </span>");
+                }
+                 else {
+                    e.push("<span>" + splitted[x] + " </span>");
+                }
+            } 
+        } else if (trimmed.startsWith('warna')) {
+            maxReached = 1;
+            e.push("<span class='keyword'>warna </span>");
+        }
+        for (let x = maxReached; x < splitted.length; x++) {
+            e.push(splitted[x] + ' ');
+        }
+        e.push('<br>');
+        n++;
+    }
+    output.innerHTML += e.join('');
+}
+
+const textarea = document.getElementById('input');
+const outputDiv = document.getElementById('stxHighlighter');
+textarea.addEventListener('scroll', function() {
+    outputDiv.scrollTop = textarea.scrollTop;
+});
+
+document.getElementById('input').addEventListener('keydown', function(event) {
+    if (event.key === 'Tab') {
+        event.preventDefault();
+        var textarea = event.target;
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+
+        textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end);
+
+        textarea.selectionStart = textarea.selectionEnd = start + 1;
+    }
+});
